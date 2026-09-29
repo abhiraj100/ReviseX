@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm --prefix ncert-ai-revision-platform/apps/web install && npm --prefix ncert-ai-revision-platform/apps/web run build",
+  "outputDirectory": "ncert-ai-revision-platform/apps/web/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

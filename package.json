@@ -1,0 +1,11 @@
+{
+  "name": "revisex-platform",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "npm --prefix ncert-ai-revision-platform/apps/web install && npm --prefix ncert-ai-revision-platform/apps/web run build"
+  }
+}
