@@ -1,0 +1,10 @@
+{
+  "name": "ncert-ai-platform",
+  "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "npm --prefix apps/web install && npm --prefix apps/web run build"
+  }
+}
