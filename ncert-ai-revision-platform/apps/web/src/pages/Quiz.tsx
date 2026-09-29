@@ -1,0 +1,25 @@
+import { useEffect, useState } from "react";
+import { CheckCircle2, Clock3, Lightbulb, RotateCcw, XCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const qs = [
+ {q:"According to Newton's second law, net force is proportional to...",o:["velocity","acceleration","displacement","temperature"],a:1,e:"For a fixed mass, F = ma, so net force is proportional to acceleration."},
+ {q:"A free-body diagram represents...",o:["only motion","forces on an isolated object","temperature","chemical composition"],a:1,e:"It isolates an object and shows the external forces acting on it."},
+ {q:"Friction generally...",o:["always points upward","opposes relative motion","is always zero","only acts in fluids"],a:1,e:"Friction opposes relative motion or the tendency of relative motion."}
+];
+
+export function Quiz(){
+ const [i,setI]=useState(0),[selected,setSelected]=useState<number|null>(null),[score,setScore]=useState(0),[done,setDone]=useState(false),[seconds,setSeconds]=useState(180);
+ useEffect(()=>{if(done)return; const t=setInterval(()=>setSeconds(s=>Math.max(0,s-1)),1000);return()=>clearInterval(t)},[done]);
+ const q=qs[i];
+ if(done)return <div className="mx-auto max-w-2xl py-10"><div className="glass rounded-[32px] p-7 text-center sm:p-10"><div className="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-400/10 text-emerald-300"><CheckCircle2 size={38}/></div><div className="mt-6 text-xs font-bold text-emerald-300">SESSION COMPLETE</div><h1 className="mt-2 text-3xl font-black">Nice work! 🎉</h1><div className="mt-8 grid grid-cols-3 gap-3"><div className="rounded-2xl bg-white/[.04] p-4"><div className="text-2xl font-black">{Math.round(score/qs.length*100)}%</div><div className="mt-1 text-[10px] text-slate-600">Accuracy</div></div><div className="rounded-2xl bg-white/[.04] p-4"><div className="text-2xl font-black">{score}</div><div className="mt-1 text-[10px] text-slate-600">Correct</div></div><div className="rounded-2xl bg-white/[.04] p-4"><div className="text-2xl font-black">{qs.length}</div><div className="mt-1 text-[10px] text-slate-600">Questions</div></div></div><div className="mt-7 flex flex-col gap-3 sm:flex-row"><button onClick={()=>{setI(0);setScore(0);setSelected(null);setDone(false);setSeconds(180)}} className="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl border border-white/10 px-4 py-3 text-xs font-black"><RotateCcw size={15}/> Try again</button><Link to="/analytics" className="flex-1 rounded-2xl bg-white px-4 py-3 text-xs font-black text-slate-900">View analytics</Link></div></div></div>;
+ const answer = selected !== null;
+ return <div className="mx-auto max-w-3xl space-y-5">
+   <div className="flex items-center justify-between"><div><div className="text-xs font-bold text-violet-300">LAWS OF MOTION</div><h1 className="mt-1 text-xl font-black">Quick Practice</h1></div><div className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-xs font-black"><Clock3 size={15} className={seconds<30?"text-red-300":"text-slate-400"}/>{String(Math.floor(seconds/60)).padStart(2,"0")}:{String(seconds%60).padStart(2,"0")}</div></div>
+   <div className="h-1.5 rounded-full bg-white/5"><div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 transition-all" style={{width:`${(i/qs.length)*100}%`}}/></div>
+   <div className="glass rounded-[30px] p-5 sm:p-8"><div className="flex items-center justify-between"><span className="rounded-full bg-violet-400/10 px-3 py-1 text-[10px] font-black text-violet-300">QUESTION {i+1}/{qs.length}</span><span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">Medium</span></div><h2 className="mt-7 text-xl font-black leading-8 sm:text-2xl">{q.q}</h2><div className="mt-7 space-y-3">{q.o.map((o,n)=>{const correct=n===q.a;const picked=n===selected;let cls="border-white/10 bg-white/[.025] hover:border-white/20";if(answer&&correct)cls="border-emerald-400/30 bg-emerald-400/10";else if(answer&&picked&&!correct)cls="border-red-400/30 bg-red-400/10";return <button key={o} disabled={answer} onClick={()=>setSelected(n)} className={`w-full flex items-center gap-4 rounded-2xl border p-4 text-left transition ${cls}`}><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/5 text-xs font-black">{String.fromCharCode(65+n)}</span><span className="flex-1 text-sm font-semibold">{o}</span>{answer&&correct&&<CheckCircle2 className="text-emerald-300" size={18}/>} {answer&&picked&&!correct&&<XCircle className="text-red-300" size={18}/>}</button>})}</div>
+   {answer&&<div className="mt-5 rounded-2xl border border-cyan-400/15 bg-cyan-400/5 p-4"><div className="flex items-center gap-2 text-xs font-black text-cyan-300"><Lightbulb size={15}/> Explanation</div><p className="mt-2 text-sm leading-6 text-slate-400">{q.e}</p></div>}
+   {answer&&<button onClick={()=>{if(selected===q.a)setScore(s=>s+1);if(i===qs.length-1)setDone(true);else{setI(x=>x+1);setSelected(null)}}} className="mt-5 w-full rounded-2xl bg-white px-4 py-3 text-xs font-black text-slate-900">{i===qs.length-1?"Finish test":"Next question"}</button>}
+   </div>
+ </div>
+}
